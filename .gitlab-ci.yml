@@ -1,0 +1,83 @@
+stages:
+   - build
+   - test
+   - quality
+   - documentation
+
+build:
+   stage: build
+   script:
+      - make fibonacci
+   artifacts:
+      paths:
+         - fibonacci
+
+buildTests:
+   stage: build
+   script:
+      - make fibonacci-test
+   artifacts:
+      paths:
+         - fibonacci-test
+
+buildProfile:
+  stage: build
+  script:
+     - make profiler
+  artifacts:
+     paths:
+        - fibonacci-profile
+
+buildCache:
+  stage: build
+  script:
+     - make cacher
+  artifacts:
+     paths:
+        - fibonacci-cache
+
+test:
+   stage: test
+   script:
+      - fibonacci-test
+
+profile:
+   stage: test
+   script:
+      - fibonacci-profile 20
+
+caching:
+   stage: test
+   script:
+      - fibonacci-cache 20
+
+staticAnalysis:
+   stage: quality
+   script:
+      - make static
+
+style:
+   stage: quality
+   script:
+      - make style
+
+coverage:
+   stage: quality
+   script:
+      - make coverage
+   artifacts:
+     paths:
+        - coverage
+
+memoryLeaks:
+   stage: quality
+   script:
+      - make memcheck
+
+docs:
+   stage: documentation
+   script:
+      - make docs
+   artifacts:
+      paths:
+         - docs

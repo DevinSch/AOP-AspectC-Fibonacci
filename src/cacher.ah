@@ -1,0 +1,36 @@
+#ifndef __CACHER_AH__
+#define __CACHER_AH__
+
+#include <iostream>
+#include <map>
+
+aspect cacher {
+  std::map<int, int> table;
+  unsigned int param;
+
+  /**
+  *Checks if a number has been calculated, if not allow the program to proceed
+  *@param arg<0> is the int param to fibonacci
+  *@return result is the address of the function return
+  */
+  advice execution("% fibonacci(...)") : around() {
+    param = *( tjp->arg<0>() );
+
+    if (table.find(param) == table.end()) {
+      tjp->proceed();
+    } else {
+      *(tjp->result()) = table.find(param)->second;
+    }
+  }
+
+  /**
+  *Add any calculated value to the cache to be used in the future
+  *@param arg<0> is the int param to fibonacci
+  *@return result is the address of the function return
+  */
+  advice execution("% fibonacci(...)") : after() {
+    table.insert(std::make_pair(*(tjp->arg<0>()), *(tjp->result())));
+  }
+};
+
+#endif

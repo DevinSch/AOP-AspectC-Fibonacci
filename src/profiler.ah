@@ -1,0 +1,28 @@
+#ifndef __PROFILER_AH__
+#define __PROFILER_AH__
+
+#include <iostream>
+
+aspect profiler {
+  int count = 0;
+
+  /**
+  *Keep track of how many times a function is called
+  *@param none
+  *@return none
+  */
+  advice execution("% fibonacci(...)") : after() {
+  	count++;
+  }
+
+  /**
+  *Print the final value after main has ran
+  *@param none
+  *@return none
+  */
+  advice execution("% main(...)") : after() {
+    std::cout << "Called " << count << " times.\n";
+  }
+};
+
+#endif
